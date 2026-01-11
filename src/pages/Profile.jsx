@@ -24,7 +24,7 @@ function Profile() {
     // Fetch user stats from backend
     const fetchStats = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/profile/${userData.id}/stats`, {
+        const response = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/stats`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -38,7 +38,7 @@ function Profile() {
         }
         
         // Fetch user's confessions for activity timeline
-        const confessionsResponse = await fetch(`http://localhost:5000/api/profile/${userData.id}/confessions`, {
+        const confessionsResponse = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/confessions`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -149,7 +149,7 @@ function Profile() {
                       const token = localStorage.getItem('token');
                       const userData = JSON.parse(localStorage.getItem('user'));
                       
-                      const response = await fetch(`http://localhost:5000/api/profile/${userData.id}`, {
+                      const response = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}`, {
                         method: 'DELETE',
                         headers: {
                           'Content-Type': 'application/json',
@@ -222,7 +222,7 @@ function Profile() {
                           try {
                             const token = localStorage.getItem('token');
                             
-                            const response = await fetch(`http://localhost:5000/api/post/${confession._id}`, {
+                            const response = await fetch(`https://backend-confession.vercel.app/api/post/${confession._id}`, {
                               method: 'DELETE',
                               headers: {
                                 'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ function Profile() {
                               const userData = JSON.parse(localStorage.getItem('user'));
                               const token = localStorage.getItem('token');
                               
-                              const confessionsResponse = await fetch(`http://localhost:5000/api/profile/${userData.id}/confessions`, {
+                              const confessionsResponse = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/confessions`, {
                                 headers: {
                                   'Authorization': `Bearer ${token}`
                                 }

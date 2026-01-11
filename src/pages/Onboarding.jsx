@@ -69,7 +69,7 @@ function Onboarding() {
       };
 
       // Call the complete profile API
-      const response = await fetch(`http://localhost:5000/api/onboarding/complete-profile/${user.id}`, {
+      const response = await fetch(`https://backend-confession.vercel.app/api/onboarding/complete-profile/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

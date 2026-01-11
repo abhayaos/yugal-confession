@@ -18,12 +18,12 @@ function Feed() {
       
       // Fetch both regular feed and trending confessions
       const [feedResponse, trendingResponse] = await Promise.all([
-        fetch('http://localhost:5000/api/feed', {
+        fetch('https://backend-confession.vercel.app/api/feed', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         }),
-        fetch('http://localhost:5000/api/feed/trending', {
+        fetch('https://backend-confession.vercel.app/api/feed/trending', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -97,7 +97,7 @@ function Feed() {
       const token = localStorage.getItem('token');
       const user = JSON.parse(localStorage.getItem('user'));
       
-      const response = await fetch(`http://localhost:5000/api/feed/${confessionId}/like`, {
+      const response = await fetch(`https://backend-confession.vercel.app/api/feed/${confessionId}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
