@@ -8,6 +8,8 @@ import Onboarding from './pages/Onboarding'
 import CreateConfession from './pages/CreateConfession'
 import PageNotFound from './component/PageNotFound'
 import Layout from './Layout'
+
+
 import './App.css'
 
 function App() {

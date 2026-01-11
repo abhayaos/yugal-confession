@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Edit3, Award, Star, Trash2 } from 'lucide-react';
+import { Settings, Edit3, Award, Star } from 'lucide-react';
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -142,42 +142,7 @@ function Profile() {
               >
                 Sign Out
               </button>
-              <button 
-                onClick={async () => {
-                  if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                    try {
-                      const token = localStorage.getItem('token');
-                      const userData = JSON.parse(localStorage.getItem('user'));
-                      
-                      const response = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}`, {
-                        method: 'DELETE',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          'Authorization': `Bearer ${token}`
-                        }
-                      });
-                      
-                      if (response.ok) {
-                        // Clear user data from localStorage
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        
-                        // Redirect to auth
-                        window.location.href = '/auth';
-                      } else {
-                        alert('Failed to delete account');
-                      }
-                    } catch (error) {
-                      console.error('Error deleting account:', error);
-                      alert('Error deleting account');
-                    }
-                  }
-                }}
-                className="px-6 py-3 bg-red-600 border border-red-500 rounded-xl font-semibold hover:bg-red-700 transition flex items-center gap-2"
-              >
-                <Trash2 size={18} />
-                Delete
-              </button>
+
             </div>
           </div>
         </div>
