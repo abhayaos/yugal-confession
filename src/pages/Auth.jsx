@@ -30,8 +30,8 @@ function Auth() {
 
     try {
       const url = isLogin 
-        ? 'http://localhost:5000/api/onboarding/login'
-        : 'http://localhost:5000/api/onboarding/register';
+        ? 'https://backend-confession.vercel.app/api/onboarding/login'
+        : 'https://backend-confession.vercel.app/api/onboarding/register';
       
       const payload = isLogin 
         ? { email: formData.email, password: formData.password }
