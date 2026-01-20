@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Heart, MessageCircle, Share, Flame, Clock, Send, RotateCcw } from 'lucide-react';
 
 function Feed() {
@@ -9,6 +9,9 @@ function Feed() {
     return savedLikedConfessions ? new Set(JSON.parse(savedLikedConfessions)) : new Set();
   });
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // Fetch confessions from backend
   const fetchConfessions = async () => {

@@ -74,10 +74,80 @@ function Profile() {
     
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4">Loading profile...</p>
+      <div className="min-h-screen bg-zinc-950 text-white px-4 py-6 sm:px-8">
+        {/* Header skeleton */}
+        <div className="flex justify-between items-center border-b border-white/20 pb-4 mb-6">
+          <div className="h-8 bg-gray-700 rounded w-24 animate-pulse"></div>
+          <div className="h-6 w-6 bg-gray-700 rounded-full animate-pulse"></div>
+        </div>
+        
+        {/* Profile info skeleton */}
+        <div className="max-w-5xl mx-auto flex flex-col gap-6 sm:gap-8">
+          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md flex flex-col items-center">
+            <div className="flex flex-col items-center mb-4">
+              {/* Profile picture skeleton */}
+              <div className="w-28 h-28 rounded-full bg-gray-700 animate-pulse mb-4"></div>
+              
+              {/* Name skeleton */}
+              <div className="h-6 bg-gray-700 rounded w-32 mb-2 animate-pulse"></div>
+              
+              {/* Email skeleton */}
+              <div className="h-4 bg-gray-700 rounded w-48 mb-4 animate-pulse"></div>
+              
+              {/* Tags skeleton */}
+              <div className="flex justify-center gap-3 mb-6 flex-wrap">
+                <div className="h-6 bg-gray-700 rounded-full w-16 animate-pulse"></div>
+                <div className="h-6 bg-gray-700 rounded-full w-20 animate-pulse"></div>
+                <div className="h-6 bg-gray-700 rounded-full w-16 animate-pulse"></div>
+                <div className="h-6 bg-gray-700 rounded-full w-20 animate-pulse"></div>
+              </div>
+              
+              {/* Progress bar skeleton */}
+              <div className="w-full bg-gray-700 rounded-full h-4 mb-6 animate-pulse"></div>
+              
+              {/* Buttons skeleton */}
+              <div className="flex gap-4">
+                <div className="h-12 w-32 bg-gray-700 rounded-xl animate-pulse"></div>
+                <div className="h-12 w-24 bg-gray-700 rounded-xl animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Achievements skeleton */}
+          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md">
+            <div className="h-6 bg-gray-700 rounded w-48 mb-4 animate-pulse"></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1,2,3,4].map((i) => (
+                <div key={i} className="flex items-center gap-2 p-3 bg-[#0F1014] rounded-xl">
+                  <div className="h-5 w-5 bg-gray-700 rounded animate-pulse"></div>
+                  <div className="h-4 bg-gray-700 rounded w-24 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Activity timeline skeleton */}
+          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md">
+            <div className="h-6 bg-gray-700 rounded w-40 mb-4 animate-pulse"></div>
+            <div className="space-y-3">
+              {[1,2,3].map((i) => (
+                <div key={i} className="flex justify-between items-center bg-[#0F1014] p-3 rounded-lg">
+                  <div className="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
+                  <div className="h-4 bg-gray-700 rounded w-16 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Stats skeleton */}
+          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            {[1,2,3,4].map((i) => (
+              <div key={i}>
+                <div className="h-6 bg-gray-700 rounded w-8 mx-auto mb-2 animate-pulse"></div>
+                <div className="h-4 bg-gray-700 rounded w-16 mx-auto animate-pulse"></div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
