@@ -84,7 +84,7 @@ function Profile() {
   }
   
   return (
-    <div className="min-h-screen bg-zinc-950 text-white px-8 py-6">
+    <div className="min-h-screen bg-zinc-950 text-white px-4 py-6 sm:px-8">
       {/* Header */}
       <div className="flex justify-between items-center border-b border-white/20 pb-4 mb-6">
         <h1 className="text-3xl font-bold">Profile</h1>
@@ -94,7 +94,7 @@ function Profile() {
       </div>
 
       {/* Profile Info */}
-      <div className="max-w-5xl mx-auto flex flex-col gap-8">
+      <div className="max-w-5xl mx-auto flex flex-col gap-6 sm:gap-8">
         <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md flex flex-col items-center">
           {/* Profile Picture + Edit */}
           <div className="flex flex-col items-center mb-4">
@@ -180,49 +180,7 @@ function Profile() {
                   <span className="flex-1 mr-2">{confession.content.substring(0, 40)}{confession.content.length > 40 ? '...' : ''}</span>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-white/50 mr-2">{formatTimeAgo(confession.createdAt)}</span>
-                    <button 
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        if (window.confirm('Are you sure you want to delete this confession?')) {
-                          try {
-                            const token = localStorage.getItem('token');
-                            
-                            const response = await fetch(`https://backend-confession.vercel.app/api/post/${confession._id}`, {
-                              method: 'DELETE',
-                              headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                              }
-                            });
-                            
-                            if (response.ok) {
-                              // Refresh the confessions list
-                              const userData = JSON.parse(localStorage.getItem('user'));
-                              const token = localStorage.getItem('token');
-                              
-                              const confessionsResponse = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/confessions`, {
-                                headers: {
-                                  'Authorization': `Bearer ${token}`
-                                }
-                              });
-                              
-                              if (confessionsResponse.ok) {
-                                const confessionsData = await confessionsResponse.json();
-                                setConfessions(confessionsData.confessions);
-                              }
-                            } else {
-                              alert('Failed to delete confession');
-                            }
-                          } catch (error) {
-                            console.error('Error deleting confession:', error);
-                            alert('Error deleting confession');
-                          }
-                        }
-                      }}
-                      className="text-red-500 hover:text-red-400 p-1"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                    
                   </div>
                 </li>
               ))
@@ -235,7 +193,7 @@ function Profile() {
         </div>
 
         {/* Stats */}
-        <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md flex justify-around text-center">
+        <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
           {stats ? (
             <>
               <div>
