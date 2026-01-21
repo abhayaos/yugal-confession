@@ -12,6 +12,7 @@ function Feed() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [expandedConfessions, setExpandedConfessions] = useState(new Set()); // Track expanded confessions
 
   // Fetch confessions from backend
   const fetchConfessions = async () => {
@@ -172,11 +173,44 @@ function Feed() {
     return `${Math.floor(diffInSeconds / 86400)}d ago`;
   };
   
+  // Helper function to truncate content and add read more/less functionality
+  const renderContentWithReadMore = (content, confessionId) => {
+    const maxLength = 200; // Maximum length before truncation
+    
+    if (content.length <= maxLength) {
+      return <div className="text-white/80 text-sm mb-3">{content}</div>;
+    }
+    
+    const isExpanded = expandedConfessions.has(confessionId);
+    const displayContent = isExpanded ? content : content.substring(0, maxLength) + '...';
+    
+    return (
+      <div className="mb-3">
+        <div className="text-white/80 text-sm">{displayContent}</div>
+        <button 
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent triggering parent click handlers
+            const newExpanded = new Set(expandedConfessions);
+            if (isExpanded) {
+              newExpanded.delete(confessionId);
+            } else {
+              newExpanded.add(confessionId);
+            }
+            setExpandedConfessions(newExpanded);
+          }}
+          className="text-[#875124] text-xs hover:underline mt-1 inline-block"
+        >
+          {isExpanded ? 'Show less' : 'Read more'}
+        </button>
+      </div>
+    );
+  };
+  
 
   
   return (
-    <div className="feed-container mt-6 w-full py-6 pb-24 bg-[#0F1014] min-h-screen pt-20">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="feed-container mt-6 w-full py-6 pb-24 bg-[#0F1014] min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 lg:px-0">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-white">Feed</h1>
           <button 
@@ -242,9 +276,7 @@ function Feed() {
                               {confession.author && confession.author.displayName ? confession.author.displayName : (confession.author && confession.author.username ? confession.author.username : 'Anonymous')}
                             </span>
                           </div>
-                          <div className="text-white/80 text-sm mb-3">
-                            {confession.content}
-                          </div>
+                          {renderContentWithReadMore(confession.content, confession.id)}
                           <div className="flex items-center gap-3 text-xs text-white/50">
                             <button 
                               className={`flex items-center gap-1 hover:text-[#875124] transition ${confession.isLiked ? 'text-red-500' : 'text-white/50'}`}
@@ -339,9 +371,7 @@ function Feed() {
                               {confession.author && confession.author.displayName ? confession.author.displayName : (confession.author && confession.author.username ? confession.author.username : 'User')}
                             </span>
                           </div>
-                          <div className="text-white/80 text-sm mb-3">
-                            {confession.content}
-                          </div>
+                          {renderContentWithReadMore(confession.content, confession.id)}
                           <div className="flex items-center gap-3 text-xs text-white/50">
                             <button 
                               className={`flex items-center gap-1 hover:text-[#875124] transition ${confession.isLiked ? 'text-red-500' : 'text-white/50'}`}
@@ -439,9 +469,7 @@ function Feed() {
                             {confession.author && confession.author.displayName ? confession.author.displayName : (confession.author && confession.author.username ? confession.author.username : 'User')}
                           </span>
                         </div>
-                        <div className="text-white/80 text-sm mb-3">
-                          {confession.content}
-                        </div>
+                        {renderContentWithReadMore(confession.content, confession.id)}
                         <div className="flex items-center gap-3 text-xs text-white/50">
                           <button 
                             className={`flex items-center gap-1 hover:text-[#875124] transition ${confession.isLiked ? 'text-red-500' : 'text-white/50'}`}

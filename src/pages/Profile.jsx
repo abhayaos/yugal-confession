@@ -154,7 +154,7 @@ function Profile() {
   }
   
   return (
-    <div className="min-h-screen bg-zinc-950 text-white px-4 py-6 sm:px-8">
+    <div className="min-h-screen bg-zinc-950 text-white px-4 py-6 sm:px-8 lg:px-8">
       {/* Header */}
       <div className="flex justify-between items-center border-b border-white/20 pb-4 mb-6">
         <h1 className="text-3xl font-bold">Profile</h1>

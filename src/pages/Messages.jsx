@@ -13,8 +13,8 @@ function Messages() {
   );
   
   return (
-    <div className="min-h-screen bg-[#0F1014] text-white pt-6">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="min-h-screen bg-[#0F1014] text-white pt-6 lg:pt-6">
+      <div className="max-w-4xl mx-auto px-4 lg:px-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Messages</h1>
