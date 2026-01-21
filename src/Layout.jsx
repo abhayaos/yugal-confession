@@ -19,7 +19,7 @@ const Layout = () => {
   
   // Hide navbars on auth pages or if not logged in
   const hideTopNav = isAuthPage || location.pathname === '/404' || location.pathname === '/profile' || location.pathname === '/create'
-  const hideBottomNav = isAuthPage || location.pathname === '/404'
+  const hideBottomNav = isAuthPage || location.pathname === '/404' || location.pathname === '/messages'
 
   // Redirect to login if not logged in and trying to access protected routes
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, PlusCircle, User } from 'lucide-react';
+import { Home, MessageCircle, PlusCircle, User } from 'lucide-react';
 
 const BottomNavbar = () => {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const BottomNavbar = () => {
 
   // Shared class for nav items
   const linkClass = ({ isActive }) =>
-    `flex flex-col items-center justify-center gap-1 text-xs transition-all
+    `flex flex-col items-center justify-center gap-1 text-xs font-medium transition-all duration-200
      ${isActive ? 'text-[#875124]' : 'text-white/60 hover:text-white'}`;
 
   const handleProfileClick = (e) => {
@@ -20,7 +20,7 @@ const BottomNavbar = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full h-16 bg-[#1B1C24]/95 backdrop-blur-sm border-t border-white/10 flex items-center justify-around z-50 px-4">
+    <nav className="fixed bottom-0 left-0 w-full h-16 bg-[#1B1C24]/95 backdrop-blur-md border-t border-white/10 flex items-center justify-around z-50 px-2 safe-area-padding-bottom">
       
       {/* Home Link */}
       <NavLink to="/" className={linkClass}>
@@ -28,19 +28,19 @@ const BottomNavbar = () => {
         <span>Home</span>
       </NavLink>
 
-      {/* Floating + Button */}
+      {/* Create Confession Button */}
       <NavLink
         to="/create"
-        className="relative -mt-6 flex items-center justify-center"
+        className="relative -mt-8 flex items-center justify-center z-10"
       >
-        <div className="bg-[#875124] p-4 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110">
+        <div className="bg-[#875124] p-4 rounded-full shadow-lg shadow-[#875124]/30 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:bg-[#a36d48] active:scale-95">
           <PlusCircle size={26} className="text-white" />
         </div>
       </NavLink>
 
-      {/* Messages Link */}
+      {/* Whisper Link */}
       <NavLink to="/messages" className={linkClass}>
-        <MessageSquare size={24} />
+        <MessageCircle size={24} />
         <span>Whisper</span>
       </NavLink>
 
