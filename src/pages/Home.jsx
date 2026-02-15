@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import Feed from '../component/Feed'
+import Navbar from '../component/Navbar'
 import { useNavigate } from 'react-router-dom'
 
 function Home() {
@@ -18,7 +19,10 @@ function Home() {
   }, [navigate]);
   
   return (
+   <>
+    <Navbar />
     <Feed />
+   </>
   )
 }
 

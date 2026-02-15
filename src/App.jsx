@@ -8,6 +8,7 @@ import Onboarding from './pages/Onboarding'
 import CreateConfession from './pages/CreateConfession'
 import PageNotFound from './component/PageNotFound'
 import Layout from './Layout'
+import Admin from './pages/Admin'
 
 
 import './App.css'
@@ -22,6 +23,7 @@ function App() {
           <Route path="/messages" element={<Messages />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
+        <Route path="/admin" element={<Admin />} />
         
         {/* Auth routes - no layout */}
         <Route path="/auth" element={<Auth />} />
