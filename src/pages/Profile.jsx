@@ -1,298 +1,241 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Edit3, Award, Star } from 'lucide-react';
+import { Settings, Edit3, Award, Star, LogOut, Users, Heart, MessageSquare } from 'lucide-react';
 
 function Profile() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
   const [confessions, setConfessions] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
-    // Get user info from localStorage
-    const userData = JSON.parse(localStorage.getItem('user'));
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
-      // Redirect to auth if not logged in
       window.location.href = '/auth';
       return;
     }
-    
-    // Set the user data from localStorage
+
     setUser(userData);
-    
-    // Fetch user stats from backend
-    const fetchStats = async () => {
+
+    const fetchData = async () => {
       try {
-        const response = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/stats`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setStats(data.stats);
-        } else {
-          console.error('Failed to fetch stats');
+        const tokenHeader = { Authorization: `Bearer ${token}` };
+
+        const [statsRes, confessionsRes] = await Promise.all([
+          fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/stats`, { headers: tokenHeader }),
+          fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/confessions`, { headers: tokenHeader }),
+        ]);
+
+        if (statsRes.ok) {
+          const data = await statsRes.json();
+          setStats(data.stats || {});
         }
-        
-        // Fetch user's confessions for activity timeline
-        const confessionsResponse = await fetch(`https://backend-confession.vercel.app/api/profile/${userData.id}/confessions`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (confessionsResponse.ok) {
-          const confessionsData = await confessionsResponse.json();
-          setConfessions(confessionsData.confessions);
-        } else {
-          console.error('Failed to fetch confessions');
+
+        if (confessionsRes.ok) {
+          const data = await confessionsRes.json();
+          setConfessions(data.confessions || []);
         }
-      } catch (error) {
-        console.error('Error fetching stats and confessions:', error);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
-    
-    fetchStats();
+
+    fetchData();
   }, []);
-    
-  // Helper function to format time ago
+
   const formatTimeAgo = (dateString) => {
+    if (!dateString) return 'just now';
     const date = new Date(dateString);
     const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
-      
-    if (diffInSeconds < 60) return 'just now';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+    const diff = Math.floor((now - date) / 1000);
+
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
   };
-    
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white px-4 py-6 sm:px-8">
-        {/* Header skeleton */}
-        <div className="flex justify-between items-center border-b border-white/20 pb-4 mb-6">
-          <div className="h-8 bg-gray-700 rounded w-24 animate-pulse"></div>
-          <div className="h-6 w-6 bg-gray-700 rounded-full animate-pulse"></div>
-        </div>
-        
-        {/* Profile info skeleton */}
-        <div className="max-w-5xl mx-auto flex flex-col gap-6 sm:gap-8">
-          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md flex flex-col items-center">
-            <div className="flex flex-col items-center mb-4">
-              {/* Profile picture skeleton */}
-              <div className="w-28 h-28 rounded-full bg-gray-700 animate-pulse mb-4"></div>
-              
-              {/* Name skeleton */}
-              <div className="h-6 bg-gray-700 rounded w-32 mb-2 animate-pulse"></div>
-              
-              {/* Email skeleton */}
-              <div className="h-4 bg-gray-700 rounded w-48 mb-4 animate-pulse"></div>
-              
-              {/* Tags skeleton */}
-              <div className="flex justify-center gap-3 mb-6 flex-wrap">
-                <div className="h-6 bg-gray-700 rounded-full w-16 animate-pulse"></div>
-                <div className="h-6 bg-gray-700 rounded-full w-20 animate-pulse"></div>
-                <div className="h-6 bg-gray-700 rounded-full w-16 animate-pulse"></div>
-                <div className="h-6 bg-gray-700 rounded-full w-20 animate-pulse"></div>
-              </div>
-              
-              {/* Progress bar skeleton */}
-              <div className="w-full bg-gray-700 rounded-full h-4 mb-6 animate-pulse"></div>
-              
-              {/* Buttons skeleton */}
-              <div className="flex gap-4">
-                <div className="h-12 w-32 bg-gray-700 rounded-xl animate-pulse"></div>
-                <div className="h-12 w-24 bg-gray-700 rounded-xl animate-pulse"></div>
-              </div>
-            </div>
+      <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white pb-24">
+        <div className="max-w-2xl mx-auto px-5 pt-10">
+          {/* Header skeleton */}
+          <div className="flex justify-between items-center mb-10">
+            <div className="h-9 w-28 bg-zinc-800 rounded-lg animate-pulse" />
+            <div className="h-10 w-10 bg-zinc-800 rounded-full animate-pulse" />
           </div>
-          
-          {/* Achievements skeleton */}
-          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md">
-            <div className="h-6 bg-gray-700 rounded w-48 mb-4 animate-pulse"></div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[1,2,3,4].map((i) => (
-                <div key={i} className="flex items-center gap-2 p-3 bg-[#0F1014] rounded-xl">
-                  <div className="h-5 w-5 bg-gray-700 rounded animate-pulse"></div>
-                  <div className="h-4 bg-gray-700 rounded w-24 animate-pulse"></div>
-                </div>
-              ))}
-            </div>
+
+          {/* Avatar + name skeleton */}
+          <div className="flex flex-col items-center mb-12">
+            <div className="w-32 h-32 rounded-full bg-zinc-800 animate-pulse mb-5" />
+            <div className="h-7 w-48 bg-zinc-800 rounded animate-pulse mb-3" />
+            <div className="h-4 w-64 bg-zinc-800 rounded animate-pulse mb-6" />
+            <div className="h-10 w-72 bg-zinc-800/60 rounded-full animate-pulse" />
           </div>
-          
-          {/* Activity timeline skeleton */}
-          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md">
-            <div className="h-6 bg-gray-700 rounded w-40 mb-4 animate-pulse"></div>
-            <div className="space-y-3">
-              {[1,2,3].map((i) => (
-                <div key={i} className="flex justify-between items-center bg-[#0F1014] p-3 rounded-lg">
-                  <div className="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
-                  <div className="h-4 bg-gray-700 rounded w-16 animate-pulse"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
+
           {/* Stats skeleton */}
-          <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-            {[1,2,3,4].map((i) => (
-              <div key={i}>
-                <div className="h-6 bg-gray-700 rounded w-8 mx-auto mb-2 animate-pulse"></div>
-                <div className="h-4 bg-gray-700 rounded w-16 mx-auto animate-pulse"></div>
+          <div className="grid grid-cols-2 gap-6 mb-12">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="text-center">
+                <div className="h-8 w-12 mx-auto bg-zinc-800 rounded mb-2 animate-pulse" />
+                <div className="h-4 w-20 mx-auto bg-zinc-800 rounded animate-pulse" />
               </div>
+            ))}
+          </div>
+
+          {/* Recent posts skeleton */}
+          <div className="space-y-5">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-24 bg-zinc-900/40 rounded-2xl animate-pulse" />
             ))}
           </div>
         </div>
       </div>
     );
   }
-  
+
+  const initial = (user?.displayName || user?.username || 'A')[0].toUpperCase();
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white px-4 py-6 sm:px-8 lg:px-8">
-      {/* Header */}
-      <div className="flex justify-between items-center border-b border-white/20 pb-4 mb-6">
-        <h1 className="text-3xl font-bold">Profile</h1>
-        <button className="p-3 rounded-full hover:bg-zinc-800 transition">
-          <Settings size={24} className="text-white" />
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-black to-zinc-950 text-white pb-24">
+      <div className="max-w-2xl mx-auto px-5 sm:px-6 pt-10">
 
-      {/* Profile Info */}
-      <div className="max-w-5xl mx-auto flex flex-col gap-6 sm:gap-8">
-        <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md flex flex-col items-center">
-          {/* Profile Picture + Edit */}
-          <div className="flex flex-col items-center mb-4">
-            <div className="relative">
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-6xl font-bold text-white">
-                {user.profilePicture || (user.displayName ? user.displayName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase())}
-              </div>
-              <button className="absolute bottom-0 right-0 bg-[#875124] rounded-full p-2 shadow-lg">
-                <Edit3 size={20} className="text-white" />
-              </button>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-12">
+          <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
+          <button className="p-3 rounded-full bg-zinc-900/60 hover:bg-zinc-800/80 transition backdrop-blur-sm">
+            <Settings size={22} />
+          </button>
+        </div>
+
+        {/* Hero / Profile main section */}
+        <div className="relative flex flex-col items-center mb-16">
+          {/* Avatar with subtle ring */}
+          <div className="relative mb-6">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-700 via-amber-600 to-amber-800 flex items-center justify-center text-5xl font-bold shadow-2xl shadow-amber-900/30 ring-2 ring-amber-500/40">
+              {user?.profilePicture ? (
+                <img src={user.profilePicture} alt="" className="w-full h-full rounded-full object-cover" />
+              ) : (
+                initial
+              )}
             </div>
+            <button className="absolute -bottom-1 -right-1 bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full shadow-lg transition">
+              <Edit3 size={18} />
+            </button>
+          </div>
 
-            {/* Name & Email */}
-            <h2 className="text-2xl font-bold mt-4">{user.displayName || 'Anonymous Soul'}</h2>
-            <p className="text-white/70 mb-4">{user.email}</p>
+          <h2 className="text-3xl font-bold mb-2 tracking-tight">
+            {user?.displayName || 'Anonymous Soul'}
+          </h2>
 
-            {/* Tags */}
-            <div className="flex justify-center gap-3 mb-6 flex-wrap">
-              <span className="px-4 py-2 bg-[#0F1014] rounded-full text-xs text-white/80">💻 Coding</span>
-              <span className="px-4 py-2 bg-[#0F1014] rounded-full text-xs text-white/80">🎵 Music</span>
-              <span className="px-4 py-2 bg-[#0F1014] rounded-full text-xs text-white/80">🎬 Movies</span>
-              <span className="px-4 py-2 bg-[#0F1014] rounded-full text-xs text-white/80">🏔 Travel</span>
-            </div>
+          <p className="text-zinc-400 mb-6 text-sm">{user?.email || '—'}</p>
 
-            {/* Progress Bar */}
-            <div className="w-full bg-[#0F1014] rounded-full h-4 mb-6">
-              <div className="bg-[#875124] h-4 rounded-full w-3/5"></div>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex gap-4">
-              <button className="px-6 py-3 bg-[#875124] rounded-xl font-semibold hover:bg-[#a36d48] transition">
-                Invite Friends
-              </button>
-              <button 
-                onClick={() => {
-                  // Clear user data from localStorage
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('user');
-                  
-                  // Redirect to auth
-                  window.location.href = '/auth';
-                }}
-                className="px-6 py-3 bg-[#0F1014] border border-white/10 rounded-xl font-semibold hover:bg-zinc-800 transition"
+          {/* Interests / mood tags - soft pills */}
+          <div className="flex flex-wrap justify-center gap-2.5 mb-8 max-w-md">
+            {['Coding', 'Music', 'Movies', 'Travel', 'Coffee', 'Midnight thoughts'].map((tag) => (
+              <span
+                key={tag}
+                className="px-4 py-1.5 bg-zinc-900/70 backdrop-blur-sm border border-zinc-800 rounded-full text-xs text-zinc-300"
               >
-                Sign Out
-              </button>
+                {tag}
+              </span>
+            ))}
+          </div>
 
+          {/* Action buttons */}
+          <div className="flex gap-4 mb-10">
+            <button className="px-7 py-3 bg-gradient-to-r from-amber-700 to-amber-600 rounded-full font-medium shadow-lg shadow-amber-900/30 hover:shadow-xl hover:shadow-amber-900/40 transition-all duration-300">
+              Invite Friends
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/auth';
+              }}
+              className="px-7 py-3 bg-zinc-900 border border-zinc-700 hover:border-zinc-600 rounded-full font-medium transition-all duration-300 flex items-center gap-2"
+            >
+              <LogOut size={18} />
+              Sign Out
+            </button>
+          </div>
+
+          {/* Quick stats - floating style */}
+          <div className="grid grid-cols-4 gap-6 w-full max-w-sm text-center">
+            <div>
+              <div className="text-2xl font-bold text-amber-400">{stats?.confessionCount || 0}</div>
+              <div className="text-xs text-zinc-500 mt-1">Posts</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-rose-400">{stats?.likeCount || 0}</div>
+              <div className="text-xs text-zinc-500 mt-1">Likes</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-blue-400">{stats?.commentCount || 0}</div>
+              <div className="text-xs text-zinc-500 mt-1">Comments</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-emerald-400">{stats?.followerCount || 0}</div>
+              <div className="text-xs text-zinc-500 mt-1">Followers</div>
             </div>
           </div>
         </div>
 
-        {/* Achievements */}
-        <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md">
-          <h3 className="text-xl font-bold mb-4">Achievements & Badges</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex items-center gap-2 p-3 bg-[#0F1014] rounded-xl">
-              <Award size={20} className="text-yellow-400" />
-              <span className="text-sm text-white/80">First Spark</span>
-            </div>
-            <div className="flex items-center gap-2 p-3 bg-[#0F1014] rounded-xl">
-              <Award size={20} className="text-yellow-400" />
-              <span className="text-sm text-white/80">Consistent Soul</span>
-            </div>
-            <div className="flex items-center gap-2 p-3 bg-[#0F1014] rounded-xl">
-              <Star size={20} className="text-indigo-400" />
-              <span className="text-sm text-white/80">Star Performer</span>
-            </div>
-            <div className="flex items-center gap-2 p-3 bg-[#0F1014] rounded-xl">
-              <Award size={20} className="text-yellow-400" />
-              <span className="text-sm text-white/80">Monthly Master</span>
-            </div>
-          </div>
-        </div>
+        {/* Recent Activity */}
+        <div className="space-y-10">
+          <div>
+            <h3 className="text-xl font-semibold mb-5 flex items-center gap-2">
+              <MessageSquare size={20} className="text-amber-500" />
+              Recent Confessions
+            </h3>
 
-        {/* Activity Timeline */}
-        <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md">
-          <h3 className="text-xl font-bold mb-4">Recent Activity</h3>
-          <ul className="space-y-3">
-            {confessions.length > 0 ? (
-              confessions.slice(0, 5).map((confession, index) => (
-                <li key={confession._id || index} className="flex justify-between items-center bg-[#0F1014] p-3 rounded-lg">
-                  <span className="flex-1 mr-2">{confession.content.substring(0, 40)}{confession.content.length > 40 ? '...' : ''}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-white/50 mr-2">{formatTimeAgo(confession.createdAt)}</span>
-                    
+            <div className="space-y-5">
+              {confessions.length > 0 ? (
+                confessions.slice(0, 5).map((c) => (
+                  <div
+                    key={c._id}
+                    className="bg-zinc-900/40 backdrop-blur-sm rounded-2xl p-5 border border-zinc-800/60 hover:border-zinc-700/80 transition-all duration-200"
+                  >
+                    <p className="text-zinc-200 leading-relaxed mb-3">
+                      {c.content}
+                    </p>
+                    <div className="text-xs text-zinc-500">
+                      {formatTimeAgo(c.createdAt)}
+                    </div>
                   </div>
-                </li>
-              ))
-            ) : (
-              <li className="flex justify-center items-center bg-[#0F1014] p-3 rounded-lg">
-                <span>No recent activity</span>
-              </li>
-            )}
-          </ul>
-        </div>
-
-        {/* Stats */}
-        <div className="bg-[#1B1C24] rounded-2xl p-6 border border-white/10 shadow-md grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          {stats ? (
-            <>
-              <div>
-                <h4 className="text-lg font-bold">{stats.confessionCount || 0}</h4>
-                <p className="text-white/70 text-sm">Posts</p>
-              </div>
-              <div>
-                <h4 className="text-lg font-bold">{stats.likeCount || 0}</h4>
-                <p className="text-white/70 text-sm">Likes</p>
-              </div>
-              <div>
-                <h4 className="text-lg font-bold">{stats.commentCount || 0}</h4>
-                <p className="text-white/70 text-sm">Comments</p>
-              </div>
-              <div>
-                <h4 className="text-lg font-bold">{stats.followerCount || 0}</h4>
-                <p className="text-white/70 text-sm">Followers</p>
-              </div>
-            </>
-          ) : (
-            <div className="flex justify-center col-span-4 py-4">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                ))
+              ) : (
+                <div className="text-center py-12 text-zinc-600">
+                  You haven't shared any thoughts yet...
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Badges section - minimal */}
+          <div>
+            <h3 className="text-xl font-semibold mb-5 flex items-center gap-2">
+              <Award size={20} className="text-yellow-500" />
+              Highlights & Badges
+            </h3>
+
+            <div className="flex flex-wrap gap-3">
+              {['First Spark', 'Consistent Soul', 'Star Performer', 'Night Owl', 'Deep Thinker'].map((badge) => (
+                <div
+                  key={badge}
+                  className="flex items-center gap-2 px-4 py-2 bg-zinc-900/60 border border-zinc-800/70 rounded-full text-sm"
+                >
+                  <Star size={16} className="text-amber-400" />
+                  <span className="text-zinc-300">{badge}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-<div className="h-12"></div>
-
-
     </div>
   );
 }

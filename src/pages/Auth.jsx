@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -99,6 +99,7 @@ function Auth() {
               </label>
               <input
                 type="text"
+                autoComplete='username'
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
@@ -131,6 +132,7 @@ function Auth() {
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
+                autoComplete='current-password'
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -169,15 +171,7 @@ function Auth() {
           </p>
         </div>
 
-        <div className="mt-4 text-center">
-          <button 
-            onClick={() => navigate('/')}
-            className="flex items-center justify-center gap-2 text-white/60 hover:text-white mx-auto"
-          >
-            <ArrowLeft size={16} />
-            Back to Home
-          </button>
-        </div>
+       
       </div>
     </div>
   );

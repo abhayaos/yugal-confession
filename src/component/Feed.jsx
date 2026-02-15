@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Heart, MessageCircle, Share, Flame, Clock, Send, RotateCcw } from "lucide-react";
+import { ThumbsUp, RotateCcw, Clock } from "lucide-react";
 
 function Feed() {
   const [confessions, setConfessions] = useState([]);
@@ -75,18 +75,12 @@ function Feed() {
         likes: Array.isArray(confession?.likes)
           ? confession.likes.length
           : 0,
-        comments: Array.isArray(confession?.comments)
-          ? confession.comments.length
-          : 0,
-        shares: confession?.shares || 0,
         author: confession?.author || null,
         isTrending,
       });
 
       const feedConfessions = feedArray.map((c) => transform(c, false));
-      const trendingConfessions = trendingArray.map((c) =>
-        transform(c, true)
-      );
+      const trendingConfessions = trendingArray.map((c) => transform(c, true));
 
       const final =
         feedConfessions.length >= 3
@@ -99,6 +93,10 @@ function Feed() {
       }));
 
       setConfessions(updated);
+
+      // Scroll to top after new data is loaded
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
     } catch (error) {
       console.error("Error fetching confessions:", error);
       setConfessions([]);
@@ -148,10 +146,7 @@ function Feed() {
       const newSet = new Set(likedConfessions);
       data.liked ? newSet.add(id) : newSet.delete(id);
       setLikedConfessions(newSet);
-      localStorage.setItem(
-        "likedConfessions",
-        JSON.stringify([...newSet])
-      );
+      localStorage.setItem("likedConfessions", JSON.stringify([...newSet]));
     } catch (err) {
       console.error("Like error:", err);
     }
@@ -163,69 +158,84 @@ function Feed() {
   };
 
   return (
-    <div className="bg-[#0F1014] mt-22 min-h-screen text-white p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="bg-[#0F1014] min-h-screen text-white p-5 sm:p-6 pt-20">
+      {/* Header - made sticky so it's always visible */}
+      <div className="flex justify-between mt-12 items-center mb-6 sticky top-0 bg-[#0F1014] z-10 py-3 border-b border-white/5">
         <h1 className="text-2xl font-bold">Feed</h1>
-        <button onClick={fetchConfessions}>
+        <button
+          onClick={fetchConfessions}
+          className="p-2.5 hover:bg-white/10 rounded-full transition-colors"
+          disabled={loading}
+          aria-label="Refresh feed"
+        >
           <RotateCcw
             size={22}
-            className={loading ? "animate-spin" : ""}
+            className={`${loading ? "animate-spin" : ""} text-white/80`}
           />
         </button>
       </div>
 
-      {loading && <p>Loading...</p>}
-
-      {!loading && confessions.length === 0 && (
-        <p className="text-white/50">No confessions found.</p>
+      {loading && (
+        <div className="text-center py-12 text-white/60 animate-pulse">
+          Loading fresh confessions...
+        </div>
       )}
 
-      <div className="space-y-4">
+      {!loading && confessions.length === 0 && (
+        <div className="text-center py-16 text-white/50">
+          No confessions found yet.
+        </div>
+      )}
+
+      <div className="space-y-5 max-w-2xl mx-auto">
         {confessions.map((confession) => (
           <div
             key={confession.id}
-            className="bg-[#1B1C24] p-4 rounded-xl border border-white/10"
+            className="bg-[#1B1C24] p-5 rounded-2xl border border-white/8 hover:border-white/15 transition-colors duration-200"
           >
-            <div className="font-semibold mb-2">
-              {renderAuthor(confession.author)}
+            {/* Author + Time row */}
+            <div className="flex justify-between items-center mb-3">
+              <div className="font-medium text-white/95">
+                {renderAuthor(confession.author)}
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-white/50">
+                <Clock size={13} />
+                {confession.timestamp}
+              </div>
             </div>
 
-            <p className="text-white/80 text-sm mb-3">
+            {/* Content */}
+            <p className="text-white/85 leading-relaxed mb-5 text-[15px]">
               {confession.content}
             </p>
 
-            <div className="flex gap-4 text-sm text-white/60">
+            {/* Like only */}
+            <div className="flex items-center">
               <button
                 onClick={() => handleLike(confession.id)}
-                className={`flex items-center gap-1 ${
-                  confession.isLiked ? "text-red-500" : ""
-                }`}
+                className={`
+                  flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200
+                  ${
+                    confession.isLiked
+                      ? "text-blue-400 bg-blue-950/40 hover:bg-blue-950/60"
+                      : "text-white/70 hover:text-blue-400 hover:bg-white/5"
+                  }
+                `}
               >
-                <Heart
+                <ThumbsUp
                   size={18}
                   fill={confession.isLiked ? "currentColor" : "none"}
+                  strokeWidth={confession.isLiked ? 0 : 2}
                 />
-                {confession.likes}
+                <span className="font-medium">{confession.likes}</span>
               </button>
-
-              <div className="flex items-center gap-1">
-                <MessageCircle size={18} />
-                {confession.comments}
-              </div>
-
-              <div className="flex items-center gap-1">
-                <Share size={18} />
-                {confession.shares}
-              </div>
-
-              <div className="flex items-center gap-1 ml-auto text-xs">
-                <Clock size={14} />
-                {confession.timestamp}
-              </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Bottom spacing for mobile nav */}
+      <div className="h-24 sm:h-16" />
     </div>
   );
 }
